@@ -22,6 +22,10 @@ class neural_network:
         self.network_weights_transposed = []
         self.network_weights_bias = []
 
+        self.network_weights_delta = []
+        self.network_weights_delta_transposed = []
+        self.network_weights_bias_delta = []
+
         self.network_layers = []
         self.network_layers_activation = []
         self.network_layers_error = []
@@ -67,7 +71,6 @@ class neural_network:
         #    for j in range(network_layers[i].shape[1]):
         #        for k in range(network_layers[i+1].shape[1]):
         #            network_layers_error[i][(0, j)] += network_weights[i+1][j, k] * network_layers_error[i+1][(0, k)]
-
         #    network_layers_error[i] *= sigmoid_gradient(numpy.array(network_layers_activation[i]))
 
         # compute gradient using matrix multiplication
@@ -79,54 +82,77 @@ class neural_network:
 
 
 
+    class neural_network_test:
+
+        def run_basic_test(self):
+
+            input_size = 4
+            nn = neural_network([4, 2, 2])
 
 
 
-# main starts here
+        def run_gradient_test(self):
 
-input_height = 32
-input_width = 32
-input_size = input_width * input_height
-output_classes = 10
+            print "Starting gradient test..."
 
-nn = neural_network([input_size, 64, 32, output_classes])
+            input_height = 28
+            input_width = 28
+            input_size = input_width * input_height
+            output_classes = 10
+            network_layers = [input_size, 64, 32, output_classes]
+            epsilon = 0.0005
+
+            print "Neural network layers: {}".format(network_layers)
+            print "Gradient epsilon: {}".format(epsilon)
+
+            nn = neural_network(network_layers)
+
+            input = numpy.matrix(numpy.random.normal(size=input_size))
+            print "Input: {}".format(input)
+
+            output = nn.propagate_forward(input)
+            print "Output: {}".format(output)
+
+            error = numpy.ones((1, output_classes))
+            nn.propagate_backward(error)
+
+            total = 0
+            passed = 0
+
+            # compute gradient with respect to i-th input
+            input_gradient = numpy.matrix(numpy.zeros(input.shape))
+            for i in range(input_gradient.shape[1]):
+
+                # compute gradient df = (f(x+h) - f(x-h)) / h
+                h = 0.0005
+                x = input[(0, i)]
+
+                input[0, i] = x - h
+                output_a = nn.propagate_forward(input)
+
+                input[0, i] = x + h
+                output_b = nn.propagate_forward(input)
+
+                gradient = (output_b - output_a) / (2 * h)
+
+                input[0, i] = x
+
+                for j in range(nn.network_layers[0].shape[1]):
+                    input_gradient[0, i] += nn.network_weights[0][i, j] * nn.network_layers_error[0][0, j]
+
+                delta = abs(input_gradient[0, j] - numpy.sum(gradient))
+
+                if delta < epsilon:
+                    print "Test case for {}-th input failed: Calculated = {} Estimated = {} Delta = {}".format(i, input_gradient[0, j], numpy.sum(gradient), delta)
+                else:
+                    passed += 1
+                    print "Test case for {}-th input passed".format(i)
+
+            print "Passed {} tests from {}".format(passed, input_gradient.shape[1])
 
 
-input = numpy.matrix(numpy.random.normal(size = input_size))
-print "Input\n {}".format(input)
-
-output = nn.propagate_forward(input)
-print "Output\n {}".format(output)
-
-error = numpy.ones((1, output_classes))
-nn.propagate_backward(error)
 
 
-# compute gradient with respect to input
-input_gradient = numpy.matrix(numpy.zeros(input.shape))
-for j in range(input_gradient.shape[1]):
 
-    # compute gradient df = (f(x+h) - f(x-h)) / h
-    h = 0.0005
-    x = input[(0, j)]
-
-    input[0, j] = x - h
-    output_a = nn.propagate_forward(input)
-
-    input[0, j] = x + h
-    output_b = nn.propagate_forward(input)
-
-    delta = (output_b - output_a)
-    gradient = delta / (2 * h)
-
-    input[0, j] = x
-    output = nn.propagate_forward(input)
-
-    for k in range(nn.network_layers[0].shape[1]):
-        input_gradient[0, j] += nn.network_weights[0][j, k] * nn.network_layers_error[0][0, k]
-
-    print "Calculated gradient for {}-th input: \n {}".format(j, input_gradient[0, j])
-    print "Gradient estimate for {}-th input: \n {}".format(j, numpy.sum(gradient))
-
-    print "\n"
-
+test = neural_network.neural_network_test()
+test.run_gradient_test()
