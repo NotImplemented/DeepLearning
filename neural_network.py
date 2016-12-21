@@ -30,6 +30,8 @@ class neural_network:
         self.network_layers_activation = []
         self.network_layers_error = []
 
+        self.network_input = None
+
         for i in range(self.network_layers_count - 1):
             self.network_layers.append(None)
             self.network_layers_activation.append(None)
@@ -43,13 +45,14 @@ class neural_network:
         for i in range(self.network_layers_count - 1):
             self.network_weights_bias.append(numpy.matrix(numpy.zeros(self.network_layers_size[i + 1])))
 
-        # for i in range(len(network_weights_bias)):
-        #    network_weights_bias[i] = numpy.matrix(numpy.random.normal(size = network_weights_bias[i].shape[0]))
+        for i in range(len(self.network_layers_count - 1)):
+            self.network_weights_bias[i] = numpy.matrix(numpy.random.normal(size = self.network_weights_bias[i].shape[0]))
 
 
     # calculate output values
     def propagate_forward(self, input):
 
+        self.network_input = input
         self.network_layers_activation[0] = input * self.network_weights[0]
         self.network_layers_activation[0] += self.network_weights_bias[0]
         self.network_layers[0] = self.sigmoid(self.network_layers_activation[0])
@@ -80,6 +83,24 @@ class neural_network:
             self.network_layers_error[i] = self.network_layers_error[i + 1] * self.network_weights_transposed[i + 1]
             self.network_layers_error[i] = numpy.asarray(self.network_layers_error[i]) * self.sigmoid_gradient(numpy.array(self.network_layers_activation[i]))
 
+    def calculate_delta(self):
+
+        self.network_weights_delta[0] = numpy.outer(self.network_input, self.network_layers_error[0])
+        self.network_weights_delta_transposed[0] = numpy.transpose(self.network_weights_delta[0])
+        self.network_weights_bias_delta[0] = self.network_layers_error[0]
+
+        for i in range(1, self.network_layers_count - 1):
+            self.network_weights_delta[i] = numpy.outer(self.network_layers[i], self.network_layers_error[i])
+            self.network_weights_delta_transposed[i] = numpy.transpose(self.network_weights_delta[i])
+            self.network_weights_bias_delta[i] = self.network_layers_error[i]
+
+    def update_weights(self):
+
+        for i in range(0, self.network_layers_count - 1):
+            self.network_weights[i] -= self.network_weights_delta[i]
+            self.network_weights_transposed[i] -= self.network_weights_delta[i]
+            self.network_weights_bias[i] -= self.network_weights_bias_delta[i]
+
 
 
     class neural_network_test:
@@ -87,7 +108,11 @@ class neural_network:
         def run_basic_test(self):
 
             input_size = 4
-            nn = neural_network([4, 2, 2])
+            nn = neural_network([input_size, 2])
+            input = numpy.matrix(numpy.random.normal(size=input_size))
+            output = nn.propagate_forward(input)
+
+            #TODO: check manually
 
 
 
