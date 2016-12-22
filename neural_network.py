@@ -45,7 +45,7 @@ class neural_network:
         for i in range(self.network_layers_count - 1):
             self.network_weights_bias.append(numpy.matrix(numpy.zeros(self.network_layers_size[i + 1])))
 
-        for i in range(len(self.network_layers_count - 1)):
+        for i in range(self.network_layers_count - 1):
             self.network_weights_bias[i] = numpy.matrix(numpy.random.normal(size = self.network_weights_bias[i].shape[0]))
 
 

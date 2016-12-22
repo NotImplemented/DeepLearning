@@ -1,15 +1,13 @@
 import numpy
-import neural_network
-import mnist_database
-
-
-test = neural_network.neural_network_test()
-test.run_gradient_test()
-
+from neural_network import neural_network
+from mnist_database import mnist_database
+from random import shuffle
 
 database = mnist_database()
+
+# prepare training data set
 images = database.get_train_images()
-labels = database.get_train_labels()
+labels = numpy.frombuffer(database.get_train_labels(), dtype = numpy.dtype(numpy.uint8))
 
 image_height = database.image_height
 image_width = database.image_width
@@ -18,19 +16,32 @@ output_classes = 10
 if len(images) != len(labels):
     raise ValueError('Train data set mismatch: {} labels, {} images'.format(len(images), len(labels)))
 
-m = train_count = len(images)
+train_count = len(images)
+train_data_set = []
 
-nn = neural_network([image_height*image_width, 64, 32, output_classes])
+for i in range(train_count):
+    image = numpy.frombuffer(images[i], dtype = numpy.dtype(numpy.uint8))
+    image = image / 255.0
+
+    train_data_set.append((image, labels[i]))
+
+shuffle(train_data_set)
+
+
+nn = neural_network([image_height * image_width, 64, 32, output_classes])
 
 processed_train_image = 0
 processed_train_image_error = 0
+m = train_count
 
 for i in range(train_count):
 
-    output = nn.propagate_forward(images[i])
+    image = train_data_set[i][0]
+    label = train_data_set[i][1]
+    output = nn.propagate_forward(image)
 
     correct = numpy.zeros((1, output_classes))
-    correct[(0, labels[i])] = 1.0
+    correct[(0, label)] = 1.0
 
     # check prediction was correct
     max_predicted_class = 0
@@ -50,11 +61,12 @@ for i in range(train_count):
         print 'Processed: {} images, learning error: {.4f} %'.format(processed_train_image, processed_percentage_error)
 
     # calculate error function
-    error_delta = output - correct
+    error_delta = numpy.asarray(output - correct)
     error = (error_delta * error_delta) / m
 
-    # propagate and update weights
+    # propagate back and update weights
     nn.propagate_backward(error)
+    nn.calculate_delta()
     nn.update_weights()
 
 print 'Training was completed successfully'

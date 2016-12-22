@@ -1,6 +1,5 @@
 import urllib
 import struct
-import numpy
 import os.path
 import gzip
 
