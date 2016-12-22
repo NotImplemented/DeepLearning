@@ -13,6 +13,9 @@ class mnist_database:
     train_file_images = 'train-images-idx3-ubyte'
     train_file_labels = 'train-labels-idx1-ubyte'
 
+    image_height = -1
+    image_width = -1
+
     database_location = 'http://yann.lecun.com/exdb/mnist/'
 
     def __init__(self):
@@ -42,13 +45,14 @@ class mnist_database:
                 raise ValueError("Magic number {} differs from {} in '{}'".format(magic, 2051, filename))
 
             count, = struct.unpack('>i', file.read(4))
-            rows, = struct.unpack('>i', file.read(4))
-            columns, = struct.unpack('>i', file.read(4))
+
+            self.image_height, = rows, = struct.unpack('>i', file.read(4))
+            self.image_width, = columns, = struct.unpack('>i', file.read(4))
 
             images = []
 
             for i in range(count):
-                images.append(file.read(rows*columns))
+                images.append(file.read(rows * columns))
 
             return images
 

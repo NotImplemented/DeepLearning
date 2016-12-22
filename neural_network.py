@@ -112,8 +112,7 @@ class neural_network:
             input = numpy.matrix(numpy.random.normal(size=input_size))
             output = nn.propagate_forward(input)
 
-            #TODO: check manually
-
+            #TODO: check formulae manually
 
 
         def run_gradient_test(self):
@@ -174,9 +173,6 @@ class neural_network:
                     print "Test case for {}-th input passed".format(i)
 
             print "Passed {} tests from {}".format(passed, input_gradient.shape[1])
-
-
-
 
 
 test = neural_network.neural_network_test()
