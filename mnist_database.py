@@ -3,7 +3,6 @@ import struct
 import os.path
 import gzip
 
-
 class mnist_database:
 
     test_file_images = 't10k-images-idx3-ubyte'
@@ -110,6 +109,7 @@ class mnist_database:
         return self.train_file_labels_data
 
     def load_data(self):
+
         self.get_test_images()
         self.get_test_labels()
 
