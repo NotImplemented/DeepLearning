@@ -58,7 +58,7 @@ for i in range(train_count):
 
     if processed_train_image and processed_train_image % 128 == 0:
         processed_percentage_error = 100 * processed_train_image_error / processed_train_image
-        print 'Processed: {} images, learning error: {.4f} %'.format(processed_train_image, processed_percentage_error)
+        print 'Processed: {} images, learning error: {:.4f} %'.format(processed_train_image, processed_percentage_error)
 
     # calculate error function
     error_delta = numpy.asarray(output - correct)
@@ -70,6 +70,6 @@ for i in range(train_count):
     nn.update_weights()
 
 print 'Training was completed successfully'
-print 'Processed: {} images, learning error: {.4f} %'.format(processed_train_image, processed_percentage_error)
+print 'Processed: {} images, learning error: {:.4f} %'.format(processed_train_image, processed_percentage_error)
 
 

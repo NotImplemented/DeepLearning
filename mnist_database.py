@@ -37,7 +37,9 @@ class mnist_database:
 
 
     def read_images(self, filename):
+
         with gzip.open(filename + '.gz', 'rb') as file:
+
             magic, = struct.unpack('>i', file.read(4))
 
             if magic != 2051:
@@ -56,7 +58,9 @@ class mnist_database:
             return images
 
     def read_labels(self, filename):
+
         with gzip.open(filename + '.gz', 'rb') as file:
+
             magic, = struct.unpack('>i', file.read(4))
 
             if magic != 2049:

@@ -32,22 +32,28 @@ class neural_network:
 
         self.network_input = None
 
+        # create layers
         for i in range(self.network_layers_count - 1):
             self.network_layers.append(None)
             self.network_layers_activation.append(None)
             self.network_layers_error.append(None)
 
+        # create weights
         for i in range(self.network_layers_count - 1):
+
             network_weights_shape = (self.network_layers_size[i], self.network_layers_size[i + 1])
-            self.network_weights.append(numpy.matrix(numpy.random.normal(size=network_weights_shape)))
+
+            self.network_weights.append(numpy.matrix(numpy.random.normal(size = network_weights_shape)))
             self.network_weights_transposed.append(self.network_weights[i].transpose())
 
-        for i in range(self.network_layers_count - 1):
-            self.network_weights_bias.append(numpy.matrix(numpy.zeros(self.network_layers_size[i + 1])))
+            self.network_weights_delta.append(numpy.matrix(numpy.zeros(network_weights_shape)))
+            self.network_weights_delta_transposed.append(self.network_weights_delta[i].transpose())
 
+        # create bias
         for i in range(self.network_layers_count - 1):
-            self.network_weights_bias[i] = numpy.matrix(numpy.random.normal(size = self.network_weights_bias[i].shape[0]))
 
+            self.network_weights_bias.append(numpy.matrix(numpy.random.normal(size = self.network_layers_size[i+1])))
+            self.network_weights_bias_delta.append(numpy.matrix(numpy.zeros(self.network_layers_size[i+1])))
 
     # calculate output values
     def propagate_forward(self, input):
@@ -90,7 +96,7 @@ class neural_network:
         self.network_weights_bias_delta[0] = self.network_layers_error[0]
 
         for i in range(1, self.network_layers_count - 1):
-            self.network_weights_delta[i] = numpy.outer(self.network_layers[i], self.network_layers_error[i])
+            self.network_weights_delta[i] = numpy.outer(self.network_layers[i-1], self.network_layers_error[i])
             self.network_weights_delta_transposed[i] = numpy.transpose(self.network_weights_delta[i])
             self.network_weights_bias_delta[i] = self.network_layers_error[i]
 
@@ -98,10 +104,8 @@ class neural_network:
 
         for i in range(0, self.network_layers_count - 1):
             self.network_weights[i] -= self.network_weights_delta[i]
-            self.network_weights_transposed[i] -= self.network_weights_delta[i]
+            self.network_weights_transposed[i] -= self.network_weights_delta_transposed[i]
             self.network_weights_bias[i] -= self.network_weights_bias_delta[i]
-
-
 
     class neural_network_test:
 
