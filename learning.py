@@ -48,6 +48,8 @@ for epoch in range(epochs):
     processed_train_image = 0
     processed_train_image_error = 0
     processed_error = 0.0
+    processed_batch = 0
+
     print 'Starting training epoch #{}'.format(epoch+1)
     print 'Batch size: {}'.format(batch_size)
     print 'Learning rate: {:.6f}'.format(learning_rate)
@@ -99,8 +101,10 @@ for epoch in range(epochs):
             processed_train_image = 0
             processed_train_image_error = 0
             processed_error = 0.0
+            processed_batch += 1
 
-            plot.update(epoch + i * 1.0 / train_count, processed_percentage_error)
+            if processed_batch and processed_batch % 16 == 0:
+                plot.update(epoch + i * 1.0 / train_count, processed_percentage_error)
 
     print ''
     print 'Training epoch #{} was completed.'.format(epoch+1)

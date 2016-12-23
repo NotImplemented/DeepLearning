@@ -31,6 +31,6 @@ class prediction_error_plot:
         matplotlib.pyplot.plot(self.line_avg_x, self.line_avg_y, 'b--', linewidth = 1.0)
 
         matplotlib.pyplot.axis(ymin = 0.0, ymax = 100.0)
-        matplotlib.pyplot.ylabel('Learning error')
+        matplotlib.pyplot.ylabel('Prediction error')
         matplotlib.pyplot.xlabel('Epoch')
         matplotlib.pyplot.pause(0.05)
