@@ -53,7 +53,7 @@ class neural_network:
         # create bias
         for i in range(self.network_layers_count - 1):
 
-            self.network_weights_bias.append(numpy.matrix(numpy.random.uniform(-1, 1, size = self.network_layers_size[i+1])))
+            self.network_weights_bias.append(numpy.matrix(numpy.random.uniform(-2.0 / numpy.sqrt(self.network_layers_size[i]), 2.0 / numpy.sqrt(self.network_layers_size[i]), size = self.network_layers_size[i+1])))
             self.network_weights_bias_delta.append(numpy.matrix(numpy.zeros(self.network_layers_size[i+1])))
 
     # calculate output values
@@ -145,7 +145,6 @@ class neural_network:
 
             #TODO: check formulae manually
 
-
         def run_gradient_test(self):
 
             print 'Starting gradient test'
@@ -197,7 +196,7 @@ class neural_network:
                             print 'Test case for {}-th weight [{},{}] failed: Calculated = {} Estimated = {} Delta = {}'.format(i, j, k, nn.network_weights_delta[i][(j, k)], numpy.sum(gradient_weight), delta)
                         else:
                             passed += 1
-                            #print 'Test case for {}-th weight [{},{}] passed'.format(i, j, k)
+                            print 'Test case for {}-th weight [{},{}] passed'.format(i, j, k)
 
                         total += 1
 
@@ -227,7 +226,7 @@ class neural_network:
                     print 'Test case for {}-th input failed: Calculated = {} Estimated = {} Delta = {}'.format(i, input_gradient[0, j], numpy.sum(gradient), delta)
                 else:
                     passed += 1
-                    #print 'Test case for {}-th input passed'.format(i)
+                    print 'Test case for {}-th input passed'.format(i)
 
                 total += 1
 
@@ -235,5 +234,5 @@ class neural_network:
             print ''
 
 
-test = neural_network.neural_network_test()
-test.run_gradient_test()
+#test = neural_network.neural_network_test()
+#test.run_gradient_test()
