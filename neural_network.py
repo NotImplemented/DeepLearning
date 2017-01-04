@@ -13,7 +13,6 @@ class neural_network:
     def sigmoid_gradient(self, x):
         return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
-
     # build network using sizes of layers
     def __init__(self, layers):
 
@@ -126,7 +125,6 @@ class neural_network:
         for i in range(self.network_layers_count - 1):
             self.network_weights_bias_delta[i] = numpy.matrix(numpy.zeros(self.network_layers_size[i+1]))
 
-
     def get_weights_delta(self):
 
         delta_weights = []
@@ -238,5 +236,5 @@ class neural_network:
             print ''
 
 
-#test = neural_network.neural_network_test()
-#test.run_gradient_test()
+test = neural_network.neural_network_test()
+test.run_gradient_test()
