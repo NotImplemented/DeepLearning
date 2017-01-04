@@ -1,5 +1,8 @@
 import numpy
 
+# TODO: Add custom activation function. Providing activation function together with gradient is enough.
+# TODO: Add custom network layers.
+
 class neural_network:
 
     # activation function
@@ -11,7 +14,7 @@ class neural_network:
         return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
 
-    # builds network using sizes of layers
+    # build network using sizes of layers
     def __init__(self, layers):
 
         self.network_layers_size = layers
@@ -72,17 +75,18 @@ class neural_network:
 
         return self.network_layers[-1]  # last element
 
-    # calculate output values
-    def propagate_backward(self, error):
+    def _propagate_backward(self, error):
 
         # compute gradient explicitly
-        # for i in range(len(network_layers)-2, -1, -1):
-        #    network_layers_error[i] = numpy.zeros(network_layers[i].shape)
+        for i in range(len(self.network_layers)-2, -1, -1):
+            self.network_layers_error[i] = numpy.zeros(self.network_layers[i].shape)
 
-        #    for j in range(network_layers[i].shape[1]):
-        #        for k in range(network_layers[i+1].shape[1]):
-        #            network_layers_error[i][(0, j)] += network_weights[i+1][j, k] * network_layers_error[i+1][(0, k)]
-        #    network_layers_error[i] *= sigmoid_gradient(numpy.array(network_layers_activation[i]))
+            for j in range(self.network_layers[i].shape[1]):
+                for k in range(self.network_layers[i+1].shape[1]):
+                    self.network_layers_error[i][(0, j)] += self.network_weights[i+1][j, k] * self.network_layers_error[i+1][(0, k)]
+                    self.network_layers_error[i] *= self.sigmoid_gradient(numpy.array(self.network_layers_activation[i]))
+
+    def propagate_backward(self, error):
 
         # compute gradient using matrix multiplication
         self.network_layers_error[-1] = error * self.sigmoid_gradient(numpy.array(self.network_layers_activation[-1]))

@@ -4,6 +4,8 @@ from neural_network import neural_network
 from mnist_database import mnist_database
 from random import shuffle
 
+# TODO: Add verification on test data set.
+
 database = mnist_database()
 
 # prepare training data set
@@ -32,14 +34,14 @@ for i in range(train_count):
 shuffle(train_data_set)
 
 # create neural network and set up parameters
-learning_rate = 0.001
-network_layers = [image_height * image_width, 256, output_classes]
+learning_rate = 0.01
+network_layers = [image_height * image_width, 256, 128, output_classes]
 
 print "Creating neural network with layers {}".format(network_layers)
 nn = neural_network(network_layers)
 
 epochs = 256
-batch_size = 64
+batch_size = 32
 
 plot = prediction_error_plot()
 
