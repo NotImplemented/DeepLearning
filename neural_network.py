@@ -149,7 +149,7 @@ class neural_network:
 
         def run_gradient_test(self):
 
-            print 'Starting gradient test'
+            print('Starting gradient test')
 
             input_height = 16
             input_width = 32
@@ -159,8 +159,8 @@ class neural_network:
             epsilon = 0.0005
             h = 0.0005
 
-            print 'Neural network layers: {}'.format(network_layers)
-            print 'Gradient epsilon: {}'.format(epsilon)
+            print('Neural network layers: {}'.format(network_layers))
+            print('Gradient epsilon: {}'.format(epsilon))
 
             nn = neural_network(network_layers)
 
@@ -195,10 +195,10 @@ class neural_network:
                         delta = abs(nn.network_weights_delta[i][(j, k)] - numpy.sum(gradient_weight))
 
                         if delta > epsilon:
-                            print 'Test case for {}-th weight [{},{}] failed: Calculated = {} Estimated = {} Delta = {}'.format(i, j, k, nn.network_weights_delta[i][(j, k)], numpy.sum(gradient_weight), delta)
+                            print('Test case for {}-th weight [{},{}] failed: Calculated = {} Estimated = {} Delta = {}'.format(i, j, k, nn.network_weights_delta[i][(j, k)], numpy.sum(gradient_weight), delta))
                         else:
                             passed += 1
-                            print 'Test case for {}-th weight [{},{}] passed'.format(i, j, k)
+                            print('Test case for {}-th weight [{},{}] passed'.format(i, j, k))
 
                         total += 1
 
@@ -225,15 +225,15 @@ class neural_network:
                 delta = abs(input_gradient[0, i] - numpy.sum(gradient))
 
                 if delta > epsilon:
-                    print 'Test case for {}-th input failed: Calculated = {} Estimated = {} Delta = {}'.format(i, input_gradient[0, j], numpy.sum(gradient), delta)
+                    print('Test case for {}-th input failed: Calculated = {} Estimated = {} Delta = {}'.format(i, input_gradient[0, j], numpy.sum(gradient), delta))
                 else:
                     passed += 1
-                    print 'Test case for {}-th input passed'.format(i)
+                    print('Test case for {}-th input passed'.format(i))
 
                 total += 1
 
-            print 'Passed {} tests from {}'.format(passed, total)
-            print ''
+            print('Passed {} tests from {}'.format(passed, total))
+            print
 
 
 test = neural_network.neural_network_test()
