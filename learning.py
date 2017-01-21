@@ -22,7 +22,6 @@ if len(images) != len(labels):
 train_count = len(images)
 train_data_set = []
 
-# normalize data
 # TODO: normalize using mean and standard deviation
 pixel_type = numpy.dtype(numpy.uint8)
 
