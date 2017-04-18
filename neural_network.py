@@ -21,12 +21,13 @@ class neural_network:
 
         # create network
         self.network_weights = []
-        self.network_weights_transposed = []
         self.network_weights_bias = []
 
         self.network_weights_delta = []
-        self.network_weights_delta_transposed = []
         self.network_weights_bias_delta = []
+
+        self.network_weights_update = []
+        self.network_weights_bias_update = []
 
         self.network_layers = []
         self.network_layers_activation = []
@@ -45,18 +46,17 @@ class neural_network:
         for i in range(self.network_layers_count - 1):
 
             network_weights_shape = (self.network_layers_size[i], self.network_layers_size[i + 1])
-
             self.network_weights.append(numpy.matrix(numpy.random.uniform(-2.0 / numpy.sqrt(self.network_layers_size[i]), 2.0 / numpy.sqrt(self.network_layers_size[i]), size = network_weights_shape)))
-            self.network_weights_transposed.append(self.network_weights[i].transpose())
 
             self.network_weights_delta.append(numpy.matrix(numpy.zeros(network_weights_shape)))
-            self.network_weights_delta_transposed.append(self.network_weights_delta[i].transpose())
+            self.network_weights_update.append(numpy.matrix(numpy.zeros(network_weights_shape)))
 
         # create bias
         for i in range(self.network_layers_count - 1):
 
             self.network_weights_bias.append(numpy.matrix(numpy.random.uniform(-2.0 / numpy.sqrt(self.network_layers_size[i]), 2.0 / numpy.sqrt(self.network_layers_size[i]), size = self.network_layers_size[i+1])))
             self.network_weights_bias_delta.append(numpy.matrix(numpy.zeros(self.network_layers_size[i+1])))
+            self.network_weights_bias_update.append(numpy.matrix(numpy.zeros(self.network_layers_size[i+1])))
 
     # calculate output values
     def propagate_forward(self, input):
@@ -92,7 +92,7 @@ class neural_network:
 
         for i in range(self.network_layers_count - 3, -1, -1):
 
-            self.network_layers_error[i] = self.network_layers_error[i + 1] * self.network_weights_transposed[i + 1]
+            self.network_layers_error[i] = self.network_layers_error[i + 1] * numpy.transpose(self.network_weights[i + 1])
             self.network_layers_error[i] = numpy.asarray(self.network_layers_error[i]) * self.sigmoid_gradient(numpy.array(self.network_layers_activation[i]))
 
     def update_delta(self):
@@ -105,22 +105,23 @@ class neural_network:
             self.network_weights_delta[i] += numpy.outer(self.network_layers[i-1], self.network_layers_error[i])
             self.network_weights_bias_delta[i] += self.network_layers_error[i]
 
-    def update_weights(self):
+    def update_weights(self, learning_rate, momentum = 1.0):
 
         for i in range(0, self.network_layers_count - 1):
 
-            self.network_weights[i] -= self.network_weights_delta[i]
-            self.network_weights_transposed[i] -= numpy.transpose(self.network_weights_delta[i])
-            self.network_weights_bias[i] -= self.network_weights_bias_delta[i]
+            self.network_weights_update[i] = learning_rate * -self.network_weights_delta[i] + momentum * self.network_weights_update[i]
+            self.network_weights_bias_update[i] = learning_rate * -self.network_weights_bias_delta[i] + momentum * self.network_weights_bias_update[i]
+
+            self.network_weights[i] += self.network_weights_update[i]
+            self.network_weights_bias[i] += self.network_weights_bias_update[i]
+
 
     def reset_weights_delta(self):
 
         for i in range(self.network_layers_count - 1):
 
             network_weights_shape = (self.network_layers_size[i], self.network_layers_size[i + 1])
-
             self.network_weights_delta[i] = numpy.matrix(numpy.zeros(network_weights_shape))
-            self.network_weights_delta_transposed[i] = self.network_weights_delta[i].transpose()
 
         for i in range(self.network_layers_count - 1):
             self.network_weights_bias_delta[i] = numpy.matrix(numpy.zeros(self.network_layers_size[i+1]))
