@@ -1,5 +1,7 @@
 # deep_learning
 
+Lightweight and fast python implementation for training neural networks.
+
 ![](https://github.com/NotImplemented/DeepLearning/blob/master/nn-2-256.png)
 
 2-layer NN, 256 hidden units, mean square error, learning rate = 0.001, batch size = 64
